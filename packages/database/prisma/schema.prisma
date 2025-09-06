@@ -1,0 +1,166 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Organization {
+  id    String @id @default(cuid())
+  name  String
+  domain String?
+  users User[]
+  jobs  Job[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model User {
+  id    String @id @default(cuid())
+  email String  @unique
+  name  String?
+  role  Role    @default(RECRUITER)
+  organization   Organization? @relation(fields: [organizationId], references: [id])
+  organizationId String?
+  credential UserCredential?
+  refreshTokens RefreshToken[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+enum Role {
+  ADMIN
+  MANAGER
+  RECRUITER
+  VIEWER
+}
+
+model Candidate {
+  id        String @id @default(cuid())
+  fullName  String
+  email     String?
+  phone     String?
+  headline  String?
+  location  String?
+  source    Source
+  status    Status @default(NEW)
+  messages  OutreachMessage[]
+  applications Application[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+enum Source {
+  LINKEDIN
+  REFERRAL
+  JOB_BOARD
+  OTHER
+}
+
+enum Status {
+  NEW
+  CONTACTED
+  QUALIFIED
+  INTERVIEWING
+  OFFER
+  HIRED
+  REJECTED
+}
+
+model Job {
+  id            String @id @default(cuid())
+  organization  Organization @relation(fields: [organizationId], references: [id])
+  organizationId String
+  title         String
+  department    String?
+  description   String
+  seniority     Seniority
+  applications  Application[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+enum Seniority {
+  INTERN
+  JUNIOR
+  MID
+  SENIOR
+  STAFF
+  LEAD
+  DIRECTOR
+  VP
+  CLEVEL
+}
+
+model Application {
+  id          String @id @default(cuid())
+  candidate   Candidate @relation(fields: [candidateId], references: [id])
+  candidateId String
+  job         Job       @relation(fields: [jobId], references: [id])
+  jobId       String
+  status      ApplicationStatus @default(APPLIED)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+enum ApplicationStatus {
+  APPLIED
+  SCREEN
+  TECHNICAL
+  ONSITE
+  OFFER
+  HIRED
+  REJECTED
+}
+
+model OutreachMessage {
+  id          String @id @default(cuid())
+  candidate   Candidate @relation(fields: [candidateId], references: [id])
+  candidateId String
+  channel     Channel
+  direction   Direction
+  body        String
+  timestamp   DateTime @default(now())
+}
+
+model UserCredential {
+  id           String @id @default(cuid())
+  user         User   @relation(fields: [userId], references: [id])
+  userId       String @unique
+  provider     AuthProvider @default(EMAIL)
+  passwordHash String
+  lastLoginAt  DateTime?
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+}
+
+enum AuthProvider {
+  EMAIL
+}
+
+model RefreshToken {
+  id         String @id @default(cuid())
+  user       User   @relation(fields: [userId], references: [id])
+  userId     String
+  tokenHash  String
+  expiresAt  DateTime
+  revokedAt  DateTime?
+  createdAt  DateTime @default(now())
+
+  @@index([userId])
+}
+
+enum Channel {
+  LINKEDIN
+  EMAIL
+  SMS
+  CALL
+}
+
+enum Direction {
+  OUTBOUND
+  INBOUND
+}
+

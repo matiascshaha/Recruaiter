@@ -1,0 +1,40 @@
+{
+  "name": "recruaiter-app",
+  "private": true,
+  "version": "0.1.0",
+  "packageManager": "pnpm@9.6.0",
+  "engines": {
+    "node": ">=18.18.0",
+    "pnpm": ">=9.0.0"
+  },
+  "scripts": {
+    "dev": "turbo dev",
+    "build": "turbo build",
+    "lint": "turbo lint",
+    "test": "turbo test",
+    "format": "prettier --write .",
+    "typecheck": "turbo typecheck",
+    "prisma:generate": "pnpm --filter @recruaiter/database prisma:generate",
+    "prisma:migrate": "pnpm --filter @recruaiter/database prisma:migrate",
+    "prisma:studio": "pnpm --filter @recruaiter/database prisma:studio"
+  },
+  "devDependencies": {
+    "turbo": "^2.0.5",
+    "typescript": "^5.5.4",
+    "prettier": "^3.3.3",
+    "eslint": "^9.7.0",
+    "eslint-config-prettier": "^9.1.0",
+    "eslint-plugin-import": "^2.29.1",
+    "eslint-plugin-jsx-a11y": "^6.9.0",
+    "eslint-plugin-react": "^7.35.0",
+    "eslint-plugin-react-hooks": "^4.6.2",
+    "eslint-plugin-unused-imports": "^4.0.0",
+    "@typescript-eslint/eslint-plugin": "^8.0.1",
+    "@typescript-eslint/parser": "^8.0.1"
+  },
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ]
+}
+

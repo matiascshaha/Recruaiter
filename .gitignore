@@ -1,0 +1,13 @@
+node_modules
+.turbo
+.next
+dist
+build
+.DS_Store
+.env*
+apps/**/.next
+coverage
+pnpm-lock.yaml
+
+.vercel
+recruaiter-project/

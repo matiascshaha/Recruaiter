@@ -1,0 +1,640 @@
+# 🧠 RECRUAITER AI DEVELOPMENT BRAIN
+# This file makes AI permanently understand our codebase and standards
+
+## 🎯 PROJECT CONTEXT (NEVER FORGET THIS)
+
+### Business Domain
+You are building **Recruaiter** - an AI recruiting platform that replaces human recruiters by:
+- Sourcing qualified candidates from LinkedIn and job boards
+- Conducting automated outreach (LinkedIn, email, cold calls)
+- Pre-qualifying candidates through AI conversations  
+- Coordinating interviews between candidates and employers
+- Managing entire recruitment pipeline until technical interviews
+
+### Tech Stack (ALWAYS USE THESE)
+- **Frontend**: Next.js 14, React 18, TypeScript, Tailwind CSS, shadcn/ui, Framer Motion
+- **Backend**: Fastify, tRPC, Prisma, PostgreSQL, Redis, BullMQ
+- **Testing**: Jest, React Testing Library, Playwright
+- **Deployment**: Docker, Vercel, Supabase
+
+### Architecture Principles (NON-NEGOTIABLE)
+- **Domain-Driven Design**: Clear boundaries (candidate, employer, job, communication, pipeline)
+- **Dependency Injection**: All services use constructor injection
+- **Event-Driven**: Status changes trigger events, never direct coupling
+- **Type-Safe Everything**: Zero `any` types, comprehensive interfaces
+- **API-First**: Every feature starts with tRPC procedure definition
+
+## 🎨 UI/UX STANDARDS (ROBINHOOD-INSPIRED)
+
+### Design System (ALWAYS USE THESE EXACT VALUES)
+```typescript
+export const designTokens = {
+  colors: {
+    // Semantic tokens (NEVER use raw hex)
+    background: { default: '#FFFFFF', subtle: '#FAFAFA', muted: '#F5F5F5' },
+    text: { default: '#1A1A1A', muted: '#737373', subtle: '#A3A3A3' },
+    accent: { default: '#00D924', hover: '#00B01F', pressed: '#009A1B' },
+    border: { default: '#EEEEEE', subtle: '#F5F5F5', focus: '#00D924' }
+  },
+  spacing: { 1: '4px', 2: '8px', 3: '12px', 4: '16px', 6: '24px', 8: '32px' },
+  radius: { sm: '8px', md: '12px', lg: '16px', full: '999px' },
+  animation: {
+    duration: { fast: '150ms', normal: '200ms', slow: '300ms' },
+    easing: 'cubic-bezier(0.2, 0.8, 0.2, 1)'
+  }
+}
+```
+
+### Component Standards (MANDATORY FOR ALL COMPONENTS)
+```typescript
+// Every component MUST follow this exact pattern
+interface ComponentProps {
+  // Base props (always include)
+  id?: string;
+  className?: string;
+  children?: React.ReactNode;
+  'data-testid'?: string;
+  
+  // Feature props (specific to component)
+  data: EntityType;
+  onAction: (id: string, action: ActionType) => void;
+  variant?: 'default' | 'compact' | 'detailed';
+  disabled?: boolean;
+}
+
+// Animation variants (use these exact patterns)
+const fadeInUp = {
+  hidden: { opacity: 0, y: 8 },
+  visible: { opacity: 1, y: 0, transition: { duration: 0.2, ease: [0.2, 0.8, 0.2, 1] } }
+};
+
+const hoverCard = {
+  whileHover: { y: -1, scale: 1.02, transition: { duration: 0.15 } },
+  whileTap: { scale: 0.98 }
+};
+```
+
+### Service Standards (EVERY SERVICE MUST FOLLOW THIS)
+```typescript
+export interface ServiceInterface {
+  methodName(params: ParamsType): Promise<ResultType>;
+}
+
+export class ServiceImpl implements ServiceInterface {
+  constructor(
+    private readonly repository: RepositoryInterface,
+    private readonly logger: LoggerInterface,
+    private readonly eventBus: EventBusInterface
+  ) {}
+  
+  async methodName(params: ParamsType): Promise<ResultType> {
+    try {
+      // 1. Validation
+      const validated = await this.validateParams(params);
+      
+      // 2. Business Logic
+      const result = await this.executeBusinessLogic(validated);
+      
+      // 3. Event Publishing
+      await this.eventBus.publish(new DomainEvent(result));
+      
+      // 4. Logging
+      this.logger.info('Operation completed', { params, result });
+      
+      return result;
+    } catch (error) {
+      this.logger.error('Operation failed', { params, error });
+      throw new ServiceError('Operation failed', { cause: error });
+    }
+  }
+}
+```
+
+## 🚀 QUALITY GATES (NEVER SKIP THESE)
+
+Before generating ANY code, verify:
+✅ **TypeScript**: Strict mode, comprehensive interfaces, no `any` types
+✅ **Animations**: Framer Motion variants from design tokens
+✅ **Colors**: Only semantic tokens from design system
+✅ **Responsive**: Mobile-first with proper breakpoints
+✅ **Accessibility**: WCAG 2.2 AA, keyboard nav, ARIA labels
+✅ **Performance**: Memo, lazy-load, virtualize decisions
+✅ **Error Handling**: User-friendly messages, recovery actions
+✅ **Testing**: Include test cases for business logic
+✅ **Analytics**: Event tracking for critical actions
+
+## 🎯 DOMAIN ENTITIES (UNDERSTAND THESE RELATIONSHIPS)
+
+```typescript
+// Core domain model (reference for all development)
+interface Candidate {
+  id: string;
+  email: string;
+  linkedinUrl?: string;
+  skills: string[];
+  aiScore: number;
+  status: CandidateStatus;
+  communications: Communication[];
+  applications: JobApplication[];
+}
+
+interface Job {
+  id: string;
+  title: string;
+  requirements: JobRequirement[];
+  compensation: CompensationRange;
+  employerId: string;
+  applications: JobApplication[];
+}
+
+interface Communication {
+  id: string;
+  candidateId: string;
+  channel: 'linkedin' | 'email' | 'phone' | 'sms';
+  content: string;
+  sentimentScore: number;
+  aiGenerated: boolean;
+}
+```
+
+## 🔥 ENFORCEMENT RULES (NEVER DEVIATE)
+
+### Code Generation Rules:
+1. **Always start with TypeScript interfaces**
+2. **Follow exact component/service patterns above**
+3. **Include comprehensive error handling**
+4. **Generate tests alongside implementation**
+5. **Add JSDoc comments for business logic**
+6. **Use semantic design tokens**
+7. **Include accessibility attributes**
+8. **Add analytics event tracking**
+
+### Quality Validation:
+If code doesn't meet standards, STOP and ask for clarification:
+- Missing TypeScript types
+- No animations on interactive elements
+- Using raw colors instead of design tokens
+- Poor mobile responsiveness
+- Missing accessibility features
+- No error handling
+- No loading states
+- Performance concerns
+
+### Communication Style:
+- Explain architectural decisions
+- Provide context for design choices
+- Suggest performance optimizations
+- Point out accessibility improvements
+- Reference domain model relationships
+
+Remember: You are building an enterprise-grade platform for hiring managers. Every line of code should reflect Staff-level engineering quality.
+# Recruaiter - Elite AI-Powered Development Rules
+# Optimized for Next-Gen AI Collaboration & Code Generation
+
+## 🧠 AI COLLABORATION PRINCIPLES
+You are working with a world-class engineering team building Recruaiter, an AI recruiting platform that replaces human recruiters. Every decision should reflect enterprise-grade quality and scalability for hundreds of users.
+
+## 🏗️ ARCHITECTURE MANDATES
+- **Domain-Driven Design**: Clear boundaries between candidate, employer, job, communication, and pipeline domains
+- **Dependency Injection**: All services use constructor injection with clear interfaces
+- **Event-Driven**: Status changes trigger events, never direct coupling
+- **Type-Safe Everything**: Zero `any` types, comprehensive interfaces, strict TypeScript
+- **API-First**: Every feature starts with tRPC procedure definition
+- **Test-Driven**: Generate tests alongside implementation, 80%+ coverage
+
+## 🎨 CODE GENERATION PATTERNS
+
+### Component Structure (ALWAYS follow this exact pattern):
+```typescript
+// 1. Interface Definition
+interface ComponentNameProps {
+  // Base props (always include)
+  id?: string;
+  className?: string;
+  children?: React.ReactNode;
+  
+  // Domain props (specific to feature)
+  data: DomainEntityType;
+  onAction: (id: string, action: ActionType) => void;
+  variant?: 'default' | 'compact' | 'detailed';
+  disabled?: boolean;
+}
+
+// 2. Component Implementation
+export const ComponentName = React.forwardRef<
+  HTMLDivElement,
+  ComponentNameProps
+>(({ id, className, children, data, onAction, variant = 'default', disabled }, ref) => {
+  // Hooks first
+  const [localState, setLocalState] = useState();
+  const { mutate } = useMutation();
+  
+  // Event handlers
+  const handleAction = useCallback((action: ActionType) => {
+    onAction?.(data.id, action);
+  }, [data.id, onAction]);
+  
+  // Render
+  return (
+    <div
+      ref={ref}
+      id={id}
+      className={cn("base-styles", variantStyles[variant], className)}
+      data-testid={`component-name-${data.id}`}
+    >
+      {/* Implementation */}
+    </div>
+  );
+});
+
+ComponentName.displayName = 'ComponentName';
+```
+
+### Service Structure (ALWAYS follow this pattern):
+```typescript
+// 1. Interface Definition
+export interface ServiceNameInterface {
+  methodName(params: MethodParams): Promise<MethodResult>; 
+}
+
+// 2. Types Definition
+export interface MethodParams {
+  // Strongly typed parameters
+}
+
+export interface MethodResult {
+  // Strongly typed results
+}
+
+// 3. Implementation
+export class ServiceNameImpl implements ServiceNameInterface {
+  constructor(
+    private readonly repository: RepositoryInterface,
+    private readonly logger: LoggerInterface,
+    private readonly eventBus: EventBusInterface
+  ) {}
+  
+  async methodName(params: MethodParams): Promise<MethodResult> {
+    try {
+      // 1. Validation
+      const validated = await this.validateParams(params);
+      
+      // 2. Business Logic
+      const result = await this.executeBusinessLogic(validated);
+      
+      // 3. Event Publishing
+      await this.eventBus.publish(new DomainEvent(result));
+      
+      // 4. Logging
+      this.logger.info('Operation completed', { params, result });
+      
+      return result;
+    } catch (error) {
+      this.logger.error('Operation failed', { params, error });
+      throw new ServiceError('Operation failed', { cause: error });
+    }
+  }
+}
+```
+
+### API Route Structure (tRPC):
+```typescript
+export const routeName = t.procedure
+  .input(z.object({
+    // Zod validation schema
+  }))
+  .output(z.object({
+    // Response schema
+  }))
+  .mutation(async ({ input, ctx }) => {
+    // 1. Authorization check
+    await ctx.auth.requireRole(['admin', 'recruiter']);
+    
+    // 2. Service call
+    const result = await ctx.services.serviceName.methodName(input);
+    
+    // 3. Standardized response
+    return {
+      success: true,
+      data: result,
+      meta: { timestamp: new Date().toISOString() }
+    };
+  });
+```
+
+## 🔥 OPTIMIZATION RULES
+
+### Performance Mandates:
+- **React**: Use React.memo, useMemo, useCallback for expensive operations
+- **Database**: Always use proper indexes, limit queries, implement pagination
+- **API**: Implement caching strategies, use React Query for client-side caching
+- **Bundle**: Code splitting at route level, lazy loading for heavy components
+
+### Error Handling Standards:
+- **Client**: Use React Error Boundaries, graceful fallback UIs
+- **Server**: Structured error responses, proper HTTP status codes
+- **Logging**: Comprehensive logging with structured data
+- **Monitoring**: Error tracking with context and user information
+
+### Security Requirements:
+- **Authentication**: JWT with refresh tokens, secure storage
+- **Authorization**: Role-based access control, principle of least privilege
+- **Input Validation**: Server-side validation with Zod schemas
+- **Data Protection**: Encrypt sensitive data, secure API endpoints
+
+## 🧪 TESTING MANDATES
+
+### Component Tests:
+```typescript
+describe('ComponentName', () => {
+  it('renders with required props', () => {
+    render(<ComponentName data={mockData} onAction={mockAction} />);
+    expect(screen.getByTestId('component-name-1')).toBeInTheDocument();
+  });
+  
+  it('handles user interactions', async () => {
+    const mockAction = jest.fn();
+    render(<ComponentName data={mockData} onAction={mockAction} />);
+    
+    await user.click(screen.getByRole('button'));
+    expect(mockAction).toHaveBeenCalledWith(mockData.id, 'action-type');
+  });
+});
+```
+
+### Service Tests:
+```typescript
+describe('ServiceName', () => {
+  let service: ServiceNameImpl;
+  let mockRepository: jest.Mocked<RepositoryInterface>;
+  
+  beforeEach(() => {
+    mockRepository = createMockRepository();
+    service = new ServiceNameImpl(mockRepository, mockLogger, mockEventBus);
+  });
+  
+  it('executes business logic successfully', async () => {
+    mockRepository.method.mockResolvedValue(mockResult);
+    
+    const result = await service.methodName(validParams);
+    
+    expect(result).toEqual(expectedResult);
+    expect(mockRepository.method).toHaveBeenCalledWith(validParams);
+  });
+});
+```
+
+## 🎯 DOMAIN-SPECIFIC RULES
+
+### Candidate Domain:
+- All candidate interactions must be logged for AI learning
+- Status changes trigger automated workflow events
+- AI scoring uses multiple factors (skills, experience, sentiment)
+- LinkedIn integration follows rate limits and terms of service
+
+### Communication Domain:
+- All messages are templated with personalization variables
+- Response analysis uses sentiment scoring
+- Multi-channel coordination (email, LinkedIn, SMS, calls)
+- A/B testing for message effectiveness
+
+### Pipeline Domain:
+- Visual pipeline with drag-and-drop status updates
+- Real-time updates using WebSocket events
+- Automated stage progression based on candidate responses
+- Integration points for external ATS systems
+
+## 📦 PACKAGE STRUCTURE RULES
+- **apps/web**: Next.js frontend with strict component patterns
+- **apps/api**: Fastify backend with tRPC and domain services
+- **packages/ui**: Shared component library with Storybook
+- **packages/database**: Prisma models and migrations
+- **packages/types**: Shared TypeScript interfaces
+- **packages/config**: Shared configurations and constants
+
+## 🚀 AI GENERATION INSTRUCTIONS
+When generating code:
+1. **Always start with types/interfaces**
+2. **Follow exact patterns above**
+3. **Include comprehensive error handling**
+4. **Generate tests alongside implementation**
+5. **Add JSDoc comments for complex business logic**
+6. **Use descriptive variable names that explain intent**
+7. **Export all types for AI reference**
+8. **Include proper logging and monitoring**
+
+## 🔧 TECHNOLOGY CONSTRAINTS
+- **Frontend**: Next.js 14, React 18, TypeScript, Tailwind, shadcn/ui, Framer Motion
+- **Backend**: Fastify, tRPC, Prisma, PostgreSQL, Redis, BullMQ
+- **Testing**: Jest, React Testing Library, Playwright for E2E
+- **Tooling**: ESLint, Prettier, Husky, lint-staged
+- **Deployment**: Docker, Vercel, Supabase, AWS S3
+
+Remember: Every line of code should reflect enterprise-grade quality. This is a platform that will handle thousands of recruiting interactions and scale to hundreds of employees.
+
+## 🏆 STAFF-LEVEL UI ENGINEERING STANDARDS
+
+### Product Context & Guardrails
+- **Audience**: Hiring managers (time-poor, accuracy-obsessed decision makers)
+- **North Star**: Reduce time-to-qualified-candidate by 70%
+- **Design Principles**: Clarity > Clever | Progressive disclosure | Zero dead-ends | Optimistic UI
+- **Performance Budget**: First Interaction ≤ 1200ms | Bundle ≤ 250KB (gz) | P95 input-to-paint ≤ 100ms
+
+### Robinhood-Inspired Design DNA
+```typescript
+export const designTokens = {
+  colors: {
+    // Semantic tokens (NEVER use raw hex values)
+    bg: { default: '#FFFFFF', subtle: '#FAFAFA', muted: '#F5F5F5' },
+    text: { default: '#1A1A1A', muted: '#737373', subtle: '#A3A3A3' },
+    border: { default: '#EEEEEE', subtle: '#F5F5F5', focus: '#00D924' },
+    accent: { default: '#00D924', hover: '#00B01F', pressed: '#009A1B' },
+    status: {
+      success: { bg: 'rgba(0, 217, 36, 0.1)', text: '#00B01F', border: '#00D924' },
+      danger: { bg: 'rgba(239, 68, 68, 0.1)', text: '#DC2626', border: '#EF4444' },
+      warning: { bg: 'rgba(245, 158, 11, 0.1)', text: '#D97706', border: '#F59E0B' }
+    }
+  },
+  
+  spacing: {
+    // 4-point scale (rem-based for scalability)
+    xs: '0.25rem',    // 4px
+    sm: '0.5rem',     // 8px
+    md: '0.75rem',    // 12px
+    lg: '1rem',       // 16px
+    xl: '1.5rem',     // 24px
+    '2xl': '2rem',    // 32px
+    '3xl': '3rem'     // 48px
+  },
+  
+  radius: {
+    card: '12px',     // Standard cards
+    pill: '999px',    // Buttons, badges
+    input: '8px'      // Form elements
+  },
+  
+  elevation: {
+    none: '0',
+    hover: '0 2px 8px rgba(0, 0, 0, 0.1)',
+    active: '0 6px 20px rgba(0, 0, 0, 0.15)'
+  },
+  
+  motion: {
+    // Production-grade easing
+    duration: { fast: '150ms', normal: '200ms', slow: '300ms' },
+    easing: 'cubic-bezier(0.2, 0.8, 0.2, 1)',
+    
+    // State transitions
+    hover: { transform: 'translateY(-1px)', transition: 'all 150ms ease' },
+    focus: { outline: '2px solid var(--accent-default)', outlineOffset: '2px' },
+    pressed: { transform: 'translateY(1px)', transition: 'all 100ms ease' }
+  },
+  
+  typography: {
+    // rem-based, line-height optimized for readability
+    title: { size: '1.5rem', lineHeight: '1.4', weight: '600' },
+    body: { size: '1rem', lineHeight: '1.4', weight: '400' },
+    caption: { size: '0.875rem', lineHeight: '1.4', weight: '400' },
+    small: { size: '0.75rem', lineHeight: '1.4', weight: '400' }
+  }
+};
+```
+
+### Component Quality Contract (MANDATORY)
+Every component MUST include:
+
+1. **TypeScript Interface** with comprehensive prop types
+2. **State Model** (controlled/uncontrolled patterns)
+3. **UX Flow Documentation** (user journey through states)
+4. **Interaction Specs** (hover/focus/press behaviors)
+5. **Loading Skeletons** (never spinners for primary content)
+6. **Inline Validation** (real-time feedback)
+7. **Accessibility Notes** (WCAG 2.2 AA compliance)
+8. **Analytics Events** (name + payload documentation)
+9. **Performance Checklist** (memo, lazy-load, virtualize decisions)
+
+### Interaction Standards (NEVER deviate)
+
+#### Lists/Tables:
+- Sticky headers for scroll contexts
+- Keyboard navigation (arrow keys, enter, space)
+- Quick filter with real-time results
+- "Last action" toast with undo capability
+- Column resize/sort/reorder
+
+#### Forms:
+- Inline validation per field + submit summary
+- Disabled submit until valid
+- Preserve user input on errors
+- Progressive enhancement
+- Optimistic updates with rollback
+
+#### Dialogs/Modals:
+- Focus trap (tab cycling within modal)
+- ESC key closes
+- Primary action positioned right
+- Destructive actions require confirmation
+- Backdrop click closes (unless unsaved changes)
+
+#### Notifications:
+- Auto-hide after 5 seconds
+- Maximum one action button
+- Never cover critical UI elements
+- Queue system for multiple notifications
+
+#### Loading Patterns:
+- Skeleton screens > spinners
+- Optimistic UI updates
+- Graceful failure reconciliation
+- Progress indicators for long operations
+
+### Accessibility Mandates (WCAG 2.2 AA)
+- Keyboard navigation complete for all flows
+- Focus indicators visible and high-contrast
+- aria-live regions for dynamic content
+- Screen reader tested
+- Color contrast minimum 4.5:1
+- Touch targets minimum 44px
+- Reduced motion support
+
+### Performance Requirements
+- Bundle budget: ≤ 250KB gzipped
+- First Interaction: ≤ 1200ms
+- P95 input-to-paint: ≤ 100ms
+- Core Web Vitals: LCP < 2.5s, FID < 100ms, CLS < 0.1
+- Image optimization: WebP with fallbacks
+- Code splitting at route level
+
+### Quality Gates (AI MUST verify before output)
+✅ **First glance scannable** (visual hierarchy clear)?
+✅ **Next action pops** without being aggressive?
+✅ **Keyboard-only path** works for all critical flows?
+✅ **Motion aids orientation** rather than decoration?
+✅ **Error copy is human, specific, recoverable**?
+✅ **P95 interaction latency** under performance budget?
+✅ **Analytics events** fire on all critical user actions?
+✅ **Empty/error states** include helpful recovery actions?
+
+### Output Format Requirements
+For every component/feature, provide:
+1. **UX Notes** (1 paragraph): goals, key user states
+2. **Component API**: props, events, controlled/uncontrolled pattern
+3. **File Structure** + production-ready code
+4. **Accessibility & Analytics** implementation bullets  
+5. **Performance Checklist**: memoization, lazy-loading, virtualization decisions
+
+## 📘 ARCHITECTURE DECISIONS & DIAGRAMS (MANDATORY)
+
+- **ADR Workflow**: Every significant change requires an ADR in `docs/adrs/ADR-YYYYMMDD-short-title.md`.
+  - Template:
+    ```markdown
+    # ADR: <Title>
+    Date: YYYY-MM-DD
+    Status: Proposed | Accepted | Superseded by ADR-xxxx | Rejected
+    Context: <Why change is needed>
+    Decision: <What is decided>
+    Consequences: <Trade-offs, risks, follow-ups>
+    Alternatives Considered: <Options and why rejected>
+    ```
+- **C4 Model**: New systems must include C4 context/container/component diagrams in `docs/architecture/`.
+  - Required: Context (system map), Container (apps/api/web/queues/db), Component (for changed service or route).
+
+## 🧪 QUALITY ATTRIBUTES & FITNESS FUNCTIONS
+
+- Define NFRs per feature: security, performance, availability, observability.
+- Enforce via “fitness functions” (automated checks) in CI:
+  - Performance: first interaction ≤ 1200ms, P95 input-to-paint ≤ 100ms
+  - Bundle: ≤ 250KB gzipped per route
+  - Lint/typecheck/test: zero errors, ≥ 80% coverage
+  - Accessibility: no critical AXE violations
+
+## 🔐 SECURITY BASELINE
+
+- Server: input validation with Zod, rate limiting on public routes, CORS allowlist, secure headers, structured errors.
+- Auth: JWT access + refresh, short-lived access token, rotation on refresh, revoke on logout, RBAC checks at procedure boundary.
+- Data: PII minimization, encrypt sensitive fields at rest where applicable, do not log secrets/PII.
+- Compliance: GDPR data export/delete flows; LinkedIn/API ToS adherence; CAN-SPAM for email outreach.
+
+## 📈 ANALYTICS NAMING & SCHEMA
+
+- Event name format: `domain.action_outcome` (snake_case payload keys).
+- Required keys: `timestamp`, `user_id`, `org_id` (if available), `context`.
+- Examples:
+  - `auth.login_attempt` { method: 'email' | 'sso' }
+  - `pipeline.candidate_moved` { from_stage: string; to_stage: string; candidate_id: string }
+  - `dashboard.card_clicked` { card_type: string }
+
+## 🧰 TESTING STRATEGY
+
+- Pyramid: unit > integration > e2e. Aim for 80%+ coverage repo-wide.
+- Frontend: Jest + RTL for components; Playwright for critical flows (login, dashboard, pipeline drag-drop).
+- Backend: Unit tests for services; integration for tRPC procedures; smoke tests for Fastify boot.
+- Deterministic seeds for DB tests; use test containers or isolated schemas.
+
+## 📚 DOCUMENTATION INDEX
+
+- `docs/ai-context/architecture.md`: C4 overview, data flow, policies (error handling, caching, idempotency, pagination).
+- `docs/ai-context/domain-knowledge.md`: recruiting lifecycle, roles, KPIs, compliance.
+- `docs/ai-context/patterns.md`: code templates for components, services, tRPC, Prisma, forms, analytics.
+- `apps/web/.cursor/rules/frontend.md`: UI rules, performance, a11y, testing, analytics.
+- `apps/api/.cursor/rules/backend.md`: API rules, security, transactions, observability, background jobs.

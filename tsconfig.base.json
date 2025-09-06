@@ -1,0 +1,26 @@
+{
+  "compilerOptions": {
+    "target": "ES2022",
+    "lib": ["ES2022", "DOM", "DOM.Iterable"],
+    "module": "ESNext",
+    "moduleResolution": "Bundler",
+    "resolveJsonModule": true,
+    "esModuleInterop": true,
+    "forceConsistentCasingInFileNames": true,
+    "skipLibCheck": true,
+    "strict": true,
+    "noUncheckedIndexedAccess": true,
+    "noImplicitOverride": true,
+    "noPropertyAccessFromIndexSignature": true,
+    "useUnknownInCatchVariables": true,
+    "baseUrl": ".",
+    "paths": {
+      "@recruaiter/ui": ["packages/ui/src"],
+      "@recruaiter/types": ["packages/types/src"],
+      "@recruaiter/database": ["packages/database/src"],
+      "@recruaiter/config/*": ["packages/config/*"],
+      "@recruaiter/api/*": ["apps/api/src/*"]
+    }
+  }
+}
+
