@@ -1,6 +1,6 @@
 {
   "version": 2,
   "framework": "nextjs",
-  "installCommand": "cd ../.. && pnpm install -w",
-  "buildCommand": "cd ../.. && pnpm --filter web build"
+  "installCommand": "corepack enable && cd ../.. && pnpm install -w",
+  "buildCommand": "corepack enable && cd ../.. && pnpm --filter web build"
 }
