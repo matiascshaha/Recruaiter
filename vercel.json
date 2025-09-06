@@ -1,8 +1,0 @@
-{
-  "version": 2,
-  "framework": "nextjs",
-  "rootDirectory": "apps/web",
-  "installCommand": "pnpm install -w",
-  "buildCommand": "pnpm install -w && pnpm --filter web build"
-}
-

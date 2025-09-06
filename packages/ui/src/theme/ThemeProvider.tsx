@@ -55,7 +55,8 @@ export function ThemeProvider({ initialTheme, children }: ThemeProviderProps) {
       document.head.appendChild(styleEl);
     }
     styleEl.innerHTML = css;
-    document.documentElement.dataset.theme = theme;
+    // dataset is an index signature; use bracket notation for strict TS configs
+    document.documentElement.dataset['theme'] = theme;
   }, [css, theme]);
 
   const value = useMemo<ThemeContextValue>(() => ({ theme, setTheme, toggleTheme }), [theme, setTheme, toggleTheme]);
@@ -68,5 +69,4 @@ export function useTheme(): ThemeContextValue {
   if (!ctx) throw new Error('useTheme must be used within ThemeProvider');
   return ctx;
 }
-
 
