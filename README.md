@@ -1,5 +1,7 @@
 ## Recruaiter - Enterprise AI Recruiting Platform
 
+**🌐 Live App:** [https://recruaiter.vercel.app/](https://recruaiter.vercel.app/)
+
 Monorepo managed with Turborepo. Apps: `apps/web` (Next.js), `apps/api` (Fastify). Shared packages: `packages/ui`, `packages/database`, `packages/types`, `packages/config`.
 
 Quick start:
